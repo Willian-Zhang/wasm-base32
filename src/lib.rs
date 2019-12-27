@@ -2,6 +2,15 @@ use wasm_bindgen::prelude::*;
 use base32;
 use hex;
 
+extern crate wee_alloc;
+
+cfg_if::cfg_if! {
+    if #[cfg(feature = "wee_alloc")] {
+        #[global_allocator]
+        static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+    }
+}
+
 #[wasm_bindgen]
 pub fn decode_to_string(encoded: String) -> Option<String> {
     return match base32::decode(base32::Alphabet::RFC4648{padding: false}, &encoded) {
